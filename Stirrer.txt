@@ -1,0 +1,35 @@
+ser = configserial("COM3", 9600, 8, "N", 1)
+ser.open()
+
+#conectar (não necessário)
+ser.write(serial.to_bytes([0xfe,0xa0,0x00,0x00,0x00,0xa0]))
+qnt = ser.in_waiting
+ser.read(qnt)
+
+#adquirir status(feedback) - fazer um flush antes de começar o comando de feedback
+ser.write(serial.to_bytes([0xfe,0xa2,0x00,0x00,0x00,0xa2]))
+qnt = ser.in_waiting
+ser.read(qnt)
+
+#controle de velocidade
+ser.write(serial.to_bytes([0xfe,0xb1,0x00,0x00,0x00,0xb1]))
+
+
+
+converter hex (high e low) em bits e juntar os dois e por ultimo converter para decimal
+hex(int('010110', 2))
+#somar hex
+x = hex(0x00 + 0x01)
+usar o valor low, caso o valor seja maior que ff
+#combinar para converter em decimal
+>>> x = 0b0010
+>>> y = 0b0101
+>>> (x << 4) + y
+37
+>>> 0b00100101
+37
+#dividir um numero em 8bits
+c, f= divmod(x, 256)
+
+import binascii
+binascii.hexlify(response)

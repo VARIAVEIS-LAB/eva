@@ -1,0 +1,27 @@
+pyinstaller
+c:\
+cd.
+cd..
+cd Cairo 2.1
+dir
+aqui
+pyinstallerpyinstaller --onedir --onefile --name=Cairo  "main.py" -noconsole
+pyinstaller --onedir --onefile --name=Cairo  "main.py" -noconsole
+dir
+pyinstaller --onedir --onefile --name=Cairo  main.py 
+dir
+cd build
+dir
+cd ..
+pyinstaller --onedir --onefile --name=Cairo  "main.py" -noconsole
+pyinstaller --onedir --onefile --name=Cairo  "main.py" --noconsole
+pyinstaller --onedir --onefile --name=Cairo  "main.py" -noconsole
+dir
+pyinstaller --onedir --onefile --name=Cairo  ".\fontes\main.py" -noconsole
+pyinstallerpyinstaller --onedir --onefile --name="Cairo"  "main.py" -noconsole
+pyinstaller --onedir --onefile --name="Cairo"  "main.py" -noconsole
+dir
+pyinstaller --onedir --onefile --name="Cairo"  "main.py" --noconsole
+dir
+doskey /history history20190727.txt
+doskey /history >> history20190727.txt

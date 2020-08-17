@@ -1,0 +1,741 @@
+<BoxLayout>:
+	spacing: 1
+	padding: 2
+	pos_hint: {'top': 1}
+
+<SMbox@BoxLayout>:
+	orientation: 'vertical'
+	size_hint_x: 0.2
+	canvas.before:
+        Color:
+            rgb: 181/255, 1/255, 55/255
+        Rectangle:
+            pos: self.pos
+            size: self.size
+	
+<Dbox@BoxLayout>:
+	orientation: 'vertical'
+	size_hint_x: 0.8
+	canvas.before:
+        Color:
+            rgb: 181/255, 1/255, 55/255
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<Button>:
+	background_normal: "Imagens\\buttonbackground2.jpg"
+	background_down: "Imagens\\buttonbackgrounddown2.jpg"
+	color: 76/255, 78/255, 75/255, 1
+	
+<Mbtn@Button>:
+	background_normal: "Imagens\\buttonbackground.jpg"
+	background_down: "Imagens\\buttonbackgrounddown.jpg"
+	color: 255/255, 253/255, 238/255, 1
+
+<SMbtn@Button>:
+	background_normal: "Imagens\\buttonbackground.jpg"
+	background_down: "Imagens\\buttonbackgrounddown.jpg"
+	color: 255/255, 253/255, 238/255, 1
+	
+<Helab@Label>:
+	color: 76/255, 78/255, 75/255, 1
+	font_name: "Fontes\\James Fajardo"
+	font_size: 28
+
+<Malab@Label>:
+	color: 255/255, 253/255, 238/255, 1
+	
+<Header>:
+	size_hint_y: 0.1
+	canvas.before:
+        Color:
+            rgb: 255/255, 253/255, 238/255
+        Rectangle:
+            pos: self.pos
+            size: self.size
+	Helab:
+		text: 'Eva Scientific'
+	Helab:
+		text: 'Cairo v2.1.2'
+	Helab:
+		text: "Bioreactor"
+
+<Menu>:
+	padding: 10
+	size_hint_y:0.15
+	canvas.before:
+        Color:
+            rgb: 255/255, 253/255, 238/255
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<RootWidget>:
+	tempo: Tempo
+	rpm: RPM
+	tempo2: Tempo2
+	temperatura: Temperatura
+	mstemperatura: MSTemperatura
+	msrpm:	MSRPM
+
+	Screen:
+		name: 'Home'
+		BoxLayout:
+			orientation: 'vertical'
+			Header:
+			BoxLayout:
+				orientation: 'vertical'
+				canvas.before:
+					Color:
+						rgb: 181/255, 1/255, 55/255
+					Rectangle:
+						pos: self.pos
+						size: self.size
+				BoxLayout:
+					Image:
+						source: "Imagens\\Logo.png"
+			Menu:
+				Label:
+				Mbtn:
+					text: "Home" #inserir vetor
+					on_press: root.current = "Home"
+				Mbtn:
+					text: "Parameters"
+					on_press: root.current = "Parameters"
+				Mbtn:
+					text: "Equipment"
+					on_press: root.current = "Equipment"
+				Mbtn:
+					text: "Monitor"
+					on_press: root.current = "Monitor"
+				Label:
+	
+	Screen:
+		name: 'Parameters'
+		BoxLayout:
+			id: blpara
+			orientation: 'vertical'
+			Popup:
+				id: spopup
+				title: "Salvar"
+				size_hint_y: 0.2
+				on_parent:
+					if self.parent == blpara: self.parent.remove_widget(self)
+				BoxLayout:
+					TextInput:
+						id:filename2
+						size_hint: 5, 1
+						multiline: False
+					Button:
+						text: "Salvar"
+						on_press: 
+							root.salvar(filename2.text, root.selec2)
+							spopup.dismiss()
+			Header:
+			GridLayout:
+				cols: 2
+				SMbox:
+					SMbtn:
+						text: "Peristaltic Pump"
+						on_press: cPar.load_slide(cPar0)
+					SMbtn:
+						text: "Incubator"
+						on_press: cPar.load_slide(cPar1)
+					SMbtn:
+						text: "Magnetic Stirrer"
+						on_press: cPar.load_slide(cPar2)
+					Label:
+					Label:
+					Label:
+					Label:
+				Dbox:
+					Carousel:
+						id: cPar
+						BoxLayout:
+							orientation: "vertical"
+							id: cPar0
+							BoxLayout:
+								size_hint_y:0.1
+								Malab:
+									size_hint_x: 0.4
+									text: "Peristaltic Pump"
+								Malab:
+									size_hint_x: 0.25
+									text: "Parameter:"
+								Spinner:
+									id: BPpar
+									size_hint_x:0.65
+									text: 'RPM/Time'
+									values: ('RPM/Time', 'Flow Rate/Volume')#, 'Flow Rate/Time', 'Volume/RPM', 'Volume/Time'
+									on_release: 
+										list.item_strings = ""
+										RPM.text = "0"
+										Tempo.text = "0"
+								Malab:
+									size_hint_x: 0.25
+									text: "Tube:"
+								Spinner:
+									id: Tube
+									size_hint_x: 0.25
+									text:"L/S 13"
+									values: ("L/S 13", "L/S 14", "L/S 16", "L/S 25", "L/S 17", "L/S 18")
+									
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Malab:
+									id:Unit1 #trocar esse label pelo python
+									text: 'RPM' if BPpar.text == 'RPM/Time' else "Flow Rate"
+								Malab:
+									id: RPM
+									text: "0"
+								Spinner:
+									id: Sent
+									text: 'clockwise' if BPpar.text == "RPM/Time" else "mL/min"
+									values: ('clockwise', 'anticlockwise') if BPpar.text == "RPM/Time" else ("mL/min", "mL/sec")
+								Button:
+									text: "Numeric Keyboard"
+									on_press: 
+										root.current = "Teclado Numerico"
+										input.text = ""
+										root.selec = 1 if BPpar.text == "RPM/Time" else 5
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Malab:
+									id:Unit3 #trocar tambem
+									text: 'Time' if BPpar.text == "RPM/Time" else "Volume"
+								Malab:
+									id: Tempo
+									text: "0"
+								Spinner:
+									id: Unid
+									text: 'seconds' if BPpar.text == "RPM/Time" else "mL"
+									values: ('seconds', 'minutes', 'hours') if BPpar.text == "RPM/Time" else ("mL", "L")
+								Button:
+									text: "Numeric Keyboard"
+									on_press: 
+										root.current = "Teclado Numerico"
+										input.text = ""
+										root.selec = 2 if BPpar.text == "RPM/Time" else 6
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Label: #apagar
+								Button:
+									text: "List"
+									on_press: 
+										root.selec2 = 1 if BPpar.text == "RPM/Time" else 3
+										root.listar(RPM.text, Sent.text, Tempo.text, Unid.text, root.selec2)
+										list.item_strings.append(RPM.text + " "  + Sent.text + ", " + Tempo.text + " " + Unid.text)
+								Button:
+									text: "New"
+									on_press:
+										root.selec2 = 1
+										list.item_strings = ""
+										root.limparlistar(root.selec2)
+								#Button:
+									#text: "Save"
+									#on_press: 
+										#root.selec2 = 1
+										#spopup.open()
+								#Button:
+									#text: "Open"
+									#on_press: 
+										#root.selec2 = 1
+										#root.current = "Abrir"
+								Label: #apagar
+							ListView:
+								id: list
+								size_hint_y:0.4
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								#Button: # fazer a screen grafico no python e dar reload() na imagem
+									#text: "Grafic"
+									#on_press: 
+										#root.gerargrafico(Unit1.text)
+										#root.current = "Grafico"
+								GridLayout:
+									cols: 2
+									Label:
+										text: "Repeat"
+									Switch:
+										id: repetir
+								Button:
+									id:btnbp
+									text: "Start"
+									on_press:
+										root.iniciar(Porta.text, repetir.active, BPequip.text, root.selec2, Tube.text) if btnbp.text == "Start" else root.pausar(BPequip.text)
+										btnbp.text = "Pause" if btnbp.text == "Start" else "Start"
+										#root.limparlistar(root.selec2)
+								Button:
+									text:"Stop"
+									on_press:
+										btnbp.text = "Start"
+										root.parar(BPequip.text)
+								Label: #retirar quando acrescentar o grafico
+						BoxLayout:
+							orientation: "vertical"
+							id: cPar1
+							BoxLayout:
+								size_hint_y:0.1
+								Malab:
+									text: "Incubator"
+								Label:
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Malab:
+									text: "Temperature"
+								Malab:
+									id: Temperatura
+									text: "0"
+								Spinner:
+									id: Unit2
+									text: "Celsius"
+									values: ("Celsius", "Fahrenheit")
+								Button:
+									text: "Numeric Keyboard"
+									on_press: 
+										root.current = "Teclado Numerico"
+										input.text = ""
+										root.selec = 3
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Malab:
+									text: 'Time'
+								Malab:
+									id: Tempo2
+									text: "0"
+								Spinner:
+									id: Unid2
+									text: 'minutes'
+									values: ('minutes', 'hours')
+								Button:
+									text: "Numeric Keyboard"
+									on_press: 
+										root.current = "Teclado Numerico"
+										input.text = ""
+										root.selec = 4
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Label: #apagar
+								Button:
+									text: "List"
+									on_press: 
+										root.selec2 = 2
+										root.listar(Temperatura.text, Unit2.text, Tempo2.text, Unid2.text, root.selec2)
+										list2.item_strings.append(Temperatura.text + " " + Unit2.text + ", " + Tempo2.text + " " + Unid2.text)
+								Button:
+									text: "New"
+									on_press:
+										root.selec2 = 2
+										list2.item_strings = ""
+										root.limparlistar(root.selec2)
+								#Button:
+									#text: "Save"
+									#on_press: 
+										#root.selec2 = 2
+										#spopup.open()
+								#Button:
+									#text: "Open"
+									#on_press: 
+										#root.selec2 = 2
+										#root.current = "Abrir"
+								Label: #apagar
+							ListView:
+								id: list2
+								size_hint_y:0.4
+							BoxLayout:
+								spacing: 2
+								size_hint_y: 0.15
+								#Button: #criar screen grafico no python e dar reload() lá mesmo
+									#text: "Grafic"
+									#on_press: 
+										#root.gerargrafico(Unit2.text)
+										#root.current = "Grafico"
+								GridLayout:
+									cols: 2
+									Label:
+										text: "Repeat"
+									Switch:
+										id: repetir2
+								Button:
+									id:btnin
+									text: "Start"
+									on_press: 
+										root.iniciar(Porta2.text, repetir2.active, Inequip.text, root.selec2, Tube.text) if btnin.text == "Start" else root.pausar(Inequip.text)
+										btnin.text = "Pause" if btnin.text == "Start" else "Start"
+										#root.limparlistar(root.selec2)
+								Button:
+									text:"Stop" #Criar a função de parar
+									on_press:
+										btnin.text = "Start"
+										root.parar(Inequip.text)
+								Label: #retirar esse label quando implementar grafico
+						BoxLayout:
+							orientation: "vertical"
+							id: cPar2
+							BoxLayout:
+								size_hint_y:0.1
+								Malab:
+									text: "Magnetic Stirrer"
+								Label:
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Malab:
+									text: "Temperature"
+								Malab:
+									id: MSTemperatura
+									text: "0"
+								Malab:
+									text: "Celsius"
+								Button:
+									text: "Numeric Keyboard"
+									on_press: 
+										root.current = "Teclado Numerico"
+										input.text = ""
+										root.selec = 7
+							BoxLayout:
+								size_hint_y: 0.15
+								spacing: 2
+								Malab:
+									text: 'Stirring'
+								Malab:
+									id: MSRPM
+									text: "0"
+								Malab:
+									text: '1/min'
+								Button:
+									text: "Numeric Keyboard"
+									on_press: 
+										root.current = "Teclado Numerico"
+										input.text = ""
+										root.selec = 8
+							Label:
+							BoxLayout:
+								spacing: 2
+								size_hint_y: 0.15
+								Label:
+								Button:
+									id: MSbtn1
+									text: "Start"
+									on_press: 
+										root.tempfunc(Porta3.text, MSequip.text, MSbtn1.text, MSTemperatura.text, MSRPM.text)
+								Button:
+									id: MSbtn2
+									text:"Stop" 
+									on_press: root.tempfunc(Porta3.text, MSequip.text, MSbtn2.text, MSTemperatura.text, MSRPM.text)
+								Label:
+			Menu:
+				Label:
+				Mbtn:
+					text: "Home" #inserir vetor
+					on_press: root.current = "Home"
+				Mbtn:
+					text: "Parameters"
+					on_press: root.current = "Parameters"
+				Mbtn:
+					text: "Equipment"
+					on_press: root.current = "Equipment"
+				Mbtn:
+					text: "Monitor"
+					on_press: root.current = "Monitor"
+				Label:
+
+	Screen:
+		name: 'Equipment'
+		BoxLayout:
+			orientation: 'vertical'
+			Header:
+			GridLayout:
+				cols: 2
+				SMbox:
+					SMbtn:
+						text: "Peristaltic Pump"
+						on_press: ePar.load_slide(ePar0)
+					SMbtn:
+						text: "Incubator"
+						on_press: ePar.load_slide(ePar1)
+					SMbtn:
+						text: "Magnetic Stirrer"
+						on_press: ePar.load_slide(ePar2)
+					Label:
+					Label:
+					Label:
+					Label:
+				Dbox:
+					Carousel:
+						id: ePar
+						BoxLayout:
+							orientation: "vertical"
+							id: ePar0
+							BoxLayout:
+								size_hint_y:0.1
+								Malab:
+									text: "Peristaltic Pump"
+							BoxLayout:
+								size_hint_y:0.15
+								Spinner:
+									id: BPequip
+									text: 'Model'
+									values: ("Type AK",) #('MasterFlex 7550-30', )
+								Spinner:
+									id: Porta
+									text: "Port"
+									on_press: Porta.values = root.orgporta()
+							Image:
+								source: "Imagens\\" + BPequip.text + ".jpg"
+						BoxLayout:
+							orientation: "vertical"
+							id: ePar1
+							BoxLayout:
+								size_hint_y:0.1
+								Malab:
+									text: "Incubator"
+							BoxLayout:
+								size_hint_y:0.15
+								Spinner:
+									id: Inequip
+									text: 'Model'
+									values: ("Type RQ",) #('Galaxy 170 R', )
+								Spinner:
+									id: Porta2
+									text: "Port"
+									on_press: Porta2.values = root.orgporta()
+							Image:
+								source: "Imagens\\" + Inequip.text + ".jpg"
+						BoxLayout:
+							orientation: "vertical"
+							id: ePar2
+							BoxLayout:
+								size_hint_y:0.1
+								Malab:
+									text: "Magnetic Stirrer"
+							BoxLayout:
+								size_hint_y:0.15
+								Spinner:
+									id: MSequip
+									text: 'Model'
+									values: ("Type HC",) #('MS7-H550-S', )
+								Spinner:
+									id: Porta3
+									text: "Port"
+									on_press: Porta3.values = root.orgporta()
+							Image:
+								source: "Imagens\\" + MSequip.text + ".jpg"
+			Menu:
+				Label:
+				Mbtn:
+					text: "Home" #inserir vetor
+					on_press: root.current = "Home"
+				Mbtn:
+					text: "Parameters"
+					on_press: root.current = "Parameters"
+				Mbtn:
+					text: "Equipment"
+					on_press: root.current = "Equipment"
+				Mbtn:
+					text: "Monitor"
+					on_press: root.current = "Monitor"
+				Label:
+	
+	Screen:
+		name: "Monitor"
+		BoxLayout:
+			orientation: 'vertical'
+			Header:
+			BoxLayout:
+				orientation: "vertical"
+				canvas.before:
+					Color:
+						rgb: 181/255, 1/255, 55/255
+					Rectangle:
+						pos: self.pos
+						size: self.size
+				Label:# retirar quando colocar o video
+				BoxLayout:
+					size_hint_y:0.15
+					Malab:
+						text: "Data logger"
+					Slider:
+						id: dtlgrtime
+						min: 1
+						max: 60
+						step: 1
+						value: 1
+						#padding: 0
+					Malab:
+						text: str(dtlgrtime.value)
+					Spinner:
+						id: dtlgrunit
+						text: "seconds"
+						values: ("seconds", "minutes")
+					Button:
+						id: datalogger
+						text: "Turn On"
+						on_press: 
+							root.iniciardata(dtlgrtime.value, dtlgrunit.text) if datalogger.text == "Turn On" else root.parardata()
+							datalogger.text = "Turn Off" if datalogger.text == "Turn On" else "Turn On"
+			Menu:
+				Label:
+				Mbtn:
+					text: "Home" #inserir vetor
+					on_press: root.current = "Home"
+				Mbtn:
+					text: "Parameters"
+					on_press: root.current = "Parameters"
+				Mbtn:
+					text: "Equipment"
+					on_press: root.current = "Equipment"
+				Mbtn:
+					text: "Monitor"
+					on_press: root.current = "Monitor"
+				Label:
+	
+	Screen:
+		name: "Grafico"
+		BoxLayout:
+			orientation: 'vertical'
+			canvas.before:
+				Color:
+					rgb: 181/255, 1/255, 55/255
+				Rectangle:
+					pos: self.pos
+					size: self.size
+			Image:
+				#source: root.graf #retirar do comentario
+			BoxLayout:
+				Label:
+				Button:
+					text: 'Voltar'
+					on_press: root.current = "Parameters"
+				Label:
+	
+	Screen:
+		name: "Abrir"
+		BoxLayout:
+			orientation: 'vertical'
+			canvas.before:
+				Color:
+					rgb: 181/255, 1/255, 55/255
+				Rectangle:
+					pos: self.pos
+					size: self.size
+			FileChooser:
+				id: fc
+				path: "Documentos\\Incubadora" if root.selec2 == 2 else "Documentos\\Peristaltica"
+				FileChooserIconLayout
+				FileChooserListLayout
+			BoxLayout:
+				size_hint_y:0.15
+				Button:
+					text: 'Icons'
+					on_press: fc.view_mode = 'icon'
+				Button:
+					text: 'Lists'
+					on_press: fc.view_mode = 'list'
+				Button:
+					text: "Cancel"
+					on_press:
+						root.current = "Parameters"
+				Button:
+					text: "Open"
+					on_press: if root.selec2 == 1: list.item_strings = root.abrir(fc.selection, root.selec2)
+					on_press: if root.selec2 == 2: list2.item_strings = root.abrir(fc.selection, root.selec2)
+					#on_press: if root.selec2 == 3: list.item_strings = root.abrir(fc.selection, root.selec2)
+					on_press: root.current = "Parameters"
+	Screen:
+		name: 'Teclado Numerico'
+		BoxLayout:
+			orientation: 'vertical'
+			canvas.before:
+				Color:
+					rgb: 181/255, 1/255, 55/255
+				Rectangle:
+					pos: self.pos
+					size: self.size
+			padding: 20
+			spacing: 1
+			TextInput:
+				id: input
+				size_hint: 1, None
+				multiline: False
+				font_size: 50
+			BoxLayout:
+				spacing: 5
+				Button:
+					text: 'Return'
+					on_press: root.current = "Parameters"
+				Button:
+					text: 'Backspace'
+					on_press: input.text = root.backward(input.text)
+				Button:
+					text: 'C'
+					on_press: input.text = ""
+				Button:
+					text: '/'
+					on_press: input.text += self.text
+			BoxLayout:
+				spacing: 5
+				Button: 
+					text: '7'
+					on_press: input.text += self.text
+				Button:
+					text: '8'
+					on_press: input.text += self.text
+				Button:
+					text: '9'
+					on_press: input.text += self.text
+				Button:
+					text: '*'
+					on_press: input.text += self.text
+			BoxLayout:
+				spacing: 5
+				Button:
+					text: '4'
+					on_press: input.text += self.text
+				Button:
+					text: '5'
+					on_press: input.text += self.text
+				Button:
+					text: '6'
+					on_press: input.text += self.text
+				Button:
+					text: '-'
+					on_press: input.text += self.text
+			BoxLayout:
+				spacing: 5
+				Button:
+					text: '1'
+					on_press: input.text += self.text 
+				Button:
+					text: '2'
+					on_press: input.text += self.text
+				Button:
+					text: '3'
+					on_press: input.text += self.text			
+				Button:
+					text: '+'
+					on_press: input.text += self.text
+			BoxLayout:
+				spacing: 5
+				Button:
+					text: '.'
+					on_press: input.text += self.text
+				Button:
+					text: '0'
+					on_press: input.text += self.text
+				Button:
+					text: '='
+					on_press: input.text = root.calculate(input.text)
+				Button:
+					text: 'Send'
+					on_press:
+						root.Test(input.text, root.selec)
+						root.current = "Parameters"
